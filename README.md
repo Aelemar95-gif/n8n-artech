@@ -198,4 +198,4 @@ Este proyecto está bajo la licencia **MIT**, por lo que puede ser usado y adapt
 **Artech Argentina – Fundación Pescar**  
 *(Pasantía Técnica – 2025)*  
 
-Integración y diseño del flujo por **Julián Duarte**.
+Integración y diseño del flujo por **Julián Duarte, Loredana Bejarano, Mauricio Cuellar, Cesar Mendoza, Rocio Pagliarulo**.
