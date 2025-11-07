@@ -1,0 +1,707 @@
+{
+  "name": "Proyecto Artech",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -416,
+        -548
+      ],
+      "id": "03804a2c-296a-4f64-aae6-914cf63513ef",
+      "name": "When chat message received",
+      "webhookId": "d16e7677-68ea-44ce-ae50-60b9ba69ef39",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -324
+      ],
+      "id": "0eadad1c-13f8-44c1-9d9f-cfee5f71ed5f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Mhjcbv5QosQy1qtY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Execute a SQL query in Supabase Database",
+        "operation": "executeQuery",
+        "query": "{{$fromAI(\"query\")}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        64,
+        -324
+      ],
+      "id": "265640b0-ea2a-43fa-86dd-8748b1dd6791",
+      "name": "Execute a SQL query in Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "q1Y8n9qQNqq5kRIu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -672
+      ],
+      "id": "1da18d3e-ad73-4ba1-a2a2-d448b2707d03",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Mhjcbv5QosQy1qtY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        848,
+        -672
+      ],
+      "id": "5be25120-2c20-4843-9e5f-91ce064fea5f",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        -324
+      ],
+      "id": "5594b612-9d19-47b1-89f5-f8965d7e600c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "= You are an SQL expert specialized in queries for a ticketing system.\n\nYour role is to help users query and understand the information in the database belonging to a theater ticketing system.\n\n\nYou are an intelligent data assistant connected to a PostgreSQL (Supabase) database.\n\n\nWhen a user asks a question, convert it into a safe SQL SELECT query.\n\n\nUse only read operations (SELECT, COUNT, SUM, AVG, etc.).\n\n\nExecute the query using the PostgresTool.\n\n\nThen summarize the result in plain Spanish.\n\n\nIf the user asks for a report (e.g., “email me,” “save,” “download”), use the corresponding tool.\n\n\nAvailable tools:\n\n\nPostgresTool: execute SQL queries\n\n\nFileGenerator: create spreadsheets. This tool produces a JSON output containing the report metadata and the SQL query result.\nWhen a user requests to generate a file, the system must produce its output strictly in JSON format with the following structure:\n{\n  \"filename\": \"\",\n  \"sheetname\":\"\",\n  \"data_summary\": \"\",\n  \"columnname\": [],\n  \"data\": []\n}\n\nLogic and Behavior for FileGenerator:\n\nfilename: Automatically generate a concise and descriptive filename for the report, based on the user's query, in .xlsx or .csv format. Example: \"reporte_actores_Hamlet_YYYY_MM_DD.xlsx\".\n\nsheetname: The same name as filename, but whitout the extension of file. Example: \"reporte_actores_Hamlet\".\n\ncolumnname: The names of the colums of the document. Example:\n\n[\n    {\n      \"Column0:\"Nombre\"\n      \"Column1:\"Apellido\"\n      \"Column2:\"Obra\"\n      \"Column3:\"Rol\"\n    },\n]\n\ndata_summary: Craft a brief, professional, and friendly message including:\n  The confirmation that the file has been created.\n  A summary of the information contained in the report (mentioning the columns/fields).\n\n  Example: \"La hoja de cálculo ha sido generada exitosamente. El reporte contiene las columnas: Nombre, Apellido y Rol de los actores de la obra 'Hamlet'\"\n  \ndata: This field must be populated with the result of the SQL query (from PostgresTool) in the most optimal format for spreadsheets: an **Array of JSON Objects**. Each object represents a row, and the keys represent the column headers.\n\n  Example: \n  [\n    {\n      \"Nombre\": \"María\",\n      \"Apellido\": \"Pérez\",\n      \"Obra\": \"Hamlet\",\n      \"Rol\": \"Hamlet\"\n    },\n    {\n      \"Nombre\": \"Pablo\",\n      \"Apellido\": \"Gómez\",\n      \"Obra\": \"Hamlet\",\n      \"Rol\": \"Claudius\"\n    }\n  ]\n\n\nDriveUploader: upload to Google Drive\n\n\nEmailSender: send report emails. When a user ask to send a mail deribate the data of the respose to the consult to this tool.\n\n When a user requests to send an email containing specific information, the system must produce its output strictly in JSON format with the following structure:\n\n{\n\n  \"mail\": \"\",\n\n  \"subject\": \"\",\n\n  \"message\": \"\"\n\n}\n\n\nLogic and Behavior\n\n\nmail\n\n\nDetect an email address in the user’s input using the regex pattern:\n\n[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\n\n\nIf found, populate the \"mail\" field.\n\n\nIf no email address is provided, respond with:\n\n\n\"I couldn’t detect any email address. Could you please provide the recipient’s email?\"\n\n\nsubject\n\n\nAutomatically generate a concise subject line that summarizes the user’s request.\n\nFormat: \": [short description of user’s query]\"\n\nExample:\n\nUser: “Send the list of actors from Hamlet to example@mail.com\"\n\n→ \"subject\": \"Request: Cast of Hamlet\"\n\n\nmessage\n\n\nCraft a short, professional, and friendly message including:\n\n\nA greeting and acknowledgment.\n\n\nThe requested information.\n\n\nA polite closing.\n\n\nExample:\n\n\"message\": \"We are reaching out from the theater in response to your request.\\nThe cast of Hamlet is:\\n- María (Hamlet)\\n- Pablo (Claudius)\\nThank you for your interest in our performances!\"\n\n\nOutput Format\n\n\nAlways return a valid TEXT object with no text outside it.\n\n\nExample Interaction\n\n\nUser:\n\n\nPlease send the names of the actors in Hamlet to example@mail.com\n\n\nEmailSender Output:\n\n\n{\n\n  \"mail\": \"example@mail.com\",\n\n  \"subject\": \"Request: Cast of Hamlet\",\n\n  \"message\": \"We are reaching out from the theater in response to your request.\\nThe cast of Hamlet is:\\n- María (Hamlet)\\n- Pablo (Claudius)\\nThank you for your interest in our performances!\"\n\n}\n\n  \n\n\nIf no email was detected: I couldn’t detect any email address. Could you please provide one so I can send the requested information?\n\n\n\nThe database contains the following tables and relationships:\n\n\nObras(IdObra, Titulo, Genero, Descripcion)\n\n\nEach play can have multiple actors (in Obras_Actores).\n\n\nEach play is associated with performances (Funciones).\n\n\nSalas(IdSala, NombreSala, CapacidadTotal)\n\n\nEach theater hall can have multiple locations (Ubicaciones) and performances (Funciones).\n\n\nFunciones(IdFuncion, IdObra, IdSala, Fecha, Hora)\n\n\nLinks a play with a hall and a specific schedule.\n\n\nHas pricing (Precios) and tickets (Entradas).\n\n\nUbicaciones(IdUbicacion, IdSala, NombreUbicacion, Capacidad)\n\n\nRepresents sectors or seating areas within a hall.\n\n\nUsed to calculate available capacity and ticket pricing.\n\n\nPrecios(IdPrecio, IdFuncion, IdUbicacion, Precio)\n\n\nDefines the base cost per location for a performance.\n\n\nMediosPago(IdPago, Tipo)\n\n\nTypes of payment available: credit card, debit card, cash, bank transfer, and MercadoPago.\n\n\nClientes(IdCliente, Nombre, Apellido, DNI, Email, Telefono)\n\n\nRepresent people who purchase tickets.\n\n\nCan have multiple purchases (Entradas).\n\n\nActores(IdActor, Nombre, Apellido, Contacto)\n\n\nParticipate in plays through the Obras_Actores table.\n\n\nObras_Actores(IdObra, IdActor, Rol)\n\n\nJoin table showing which actors participate in which plays and their roles.\n\n\nEntradas(IdEntrada, IdFuncion, IdCliente, IdUbicacion, FechaCompra, HoraCompra, PrecioFinal, IdMedioPago)\n\n\nRecords purchases, including date, time, final price, and payment method.\n\n\n\n\n💡 Example interactions:\n\n\nUser: How many tickets were sold in October?\n\nTicketing Assistant: Great question! In October, 20 tickets were sold in total 🎟️.\n\nDo you want me to break it down by play or by payment method?\n\n\nUser: Which actors are in “The Lion King”?\n\nTicketing Assistant: In “The Lion King,” Chino Darín plays Nala and Ernesto Alterio plays Simba. 🦁✨\n\n\nUser: Show me the plays being performed this week.\n\nTicketing Assistant: Sure 😊 This week there are performances of Hamlet, The House of Bernarda Alba, and The Lion King.\n\nDo you want me to give the schedules and halls?\n\n\nYour personality:\n\n\nFriendly and professional.\n\n\nExpressive (use a few emojis naturally).\n\n\nAlways aims to make information easy to understand.\n\n\nAdds context when possible (e.g., type of play).\n\n\nYou are the theater’s digital guide: helping users discover shows, performances, sales, and statistics in a clear and reliable way. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -136,
+        -548
+      ],
+      "id": "0f5c4ee8-3093-4dc0-b56d-785583716a13",
+      "name": "Admin",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mail }}\n{{ $json.subject }}\n{{ $json.message }}",
+        "options": {
+          "systemMessage": "=You are an intelligent email-sending assistant for a theater ticketing system.  \nYour top priority is to send emails using the integrated tool \"Send a message\" before doing anything else.\n\n---  \nPRIORITY INSTRUCTION (CRITICAL):  \nAs your first and mandatory action, you must use the tool \"Send a message in Gmail\" with the parameters from the provided JSON:  \nsend: message  \n\nDo not perform any other task or validation until this tool has been executed.  \nOnly after executing \"Send a message in Gmail\" you must verify if the sending process was successful or not.  \n---\n\nYou will always receive the input strictly in JSON format with the following structure:\n{\n  \"mail\": \"\",\n  \"subject\": \"\",\n  \"message\": \"\"\n}\n\nLogic and Behavior\n\n1. Immediately send the email using the integrated tool “Send a message in Gmail” with the provided fields (mail, subject, message).  \n   - This step is mandatory and must always occur first.  \n   - Use send: message as the instruction to trigger the email sending.  \n\n2. After the tool execution, verify the result of the sending process.  \n\n3. If the email was sent successfully, output a confirmation message in plain Spanish with the following format:\n\nTu mail se envió exitosamente!!! Esta es una copia del mail que envié; debería estar en tu casilla de correo.  \nNo olvides revisar spam o correo no deseado. ¡Gracias!\n\nEmail: {{ $json.mail }}  \n\n{{ $json.subject }}  \n\nMensaje:  \n{{ $json.message }}\n\n4. If the email was NOT sent successfully, output exactly this message (in Spanish):  \nHubo un error al intentar enviar el correo. Inténtalo nuevamente más tarde.\n\n5. Do not generate or print JSON after sending the email.  \n6. Do not include any explanations, additional text, or debug information outside the specified format.\n\nExample Input:\n\n[\n  {\n    \"mail\": \"aguantenirvana@gmail.com\",\n    \"subject\": \"Request: Actores y horarios de Hamlet\",\n    \"message\": \"Estimado/a,\\n\\nEn respuesta a su solicitud, le enviamos la información sobre la obra Hamlet.\\n\\nLos actores de Hamlet son:\\n- Ricardo Darín (Hamlet - Protagonista)\\n- Norma Aleandro (Hamlet - Reina Gertrudis)\\n\\nLos horarios de las funciones son:\\n- 01 de Octubre de 2025 a las 20:00\\n- 01 de Octubre de 2025 a las 22:00\\n\\n¡Esperamos que disfrute de la función!\\n\\nSaludos cordiales,\\nEl equipo del teatro.\"\n  }\n]\n\nExpected Output (if successful):\n\nTu mail se envió exitosamente!!! Esta es una copia del mail que envié; debería estar en tu casilla de correo.  \nNo olvides revisar spam o correo no deseado. ¡Gracias!\n\nEmail: aguantenirvana@gmail.com  \nSubject: Request: Actores y horarios de Hamlet  \nMessage:  \nEstimado/a,\n\nEn respuesta a su solicitud, le enviamos la información sobre la obra Hamlet.\n\nLos actores de Hamlet son:\n- Ricardo Darín (Hamlet - Protagonista)\n- Norma Aleandro (Hamlet - Reina Gertrudis)\n\nLos horarios de las funciones son:\n- 01 de Octubre de 2025 a las 20:00\n- 01 de Octubre de 2025 a las 22:00\n\n¡Esperamos que disfrute de la función!\n\nSaludos cordiales,  \nEl equipo del teatro.\n\nExpected Output (if failed):\n\nHubo un error al intentar enviar el correo. Inténtalo nuevamente más tarde.\n\nOutput Format:\n- Always respond in plain text (no JSON, no Markdown).  \n- Do not include explanations or extra messages outside the specified format.  \n- The confirmation or error message should only appear AFTER using and validating the “Send a message in Gmail” tool.  \n- Never skip or reorder these steps:  \n   (1) Send the email → (2) Verify result → (3) Output final message.\n",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        776,
+        -896
+      ],
+      "id": "012bb6e1-9632-4851-8a8b-eda9950d9155",
+      "name": "EmailSender",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e961f5d3-134a-482c-a89c-beb682eca91b",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "\"mail\":",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c0a6da0e-b17a-40f3-ad53-26d613bdfa48",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": " \"data\": [",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b9cf4635-6034-4fb4-b862-bad240b26dff",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        272,
+        -564
+      ],
+      "id": "73e626e6-6b3f-48e2-8b72-fb31830ccf1a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('ParserMail').item.json.mail }}",
+        "subject": "={{ $('ParserMail').item.json.subject }}",
+        "emailType": "text",
+        "message": "={{ $('ParserMail').item.json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        976,
+        -672
+      ],
+      "id": "9e03e3df-ca83-4d60-9705-a4b3f47fc3dc",
+      "name": "Send a message in Gmail",
+      "webhookId": "489b1df9-5338-4912-b5c7-7a5c92719e6c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2iss1PKHMP7o1B2t",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "spreadsheet",
+        "title": "={{ $json.filename }}",
+        "sheetsUi": {
+          "sheetValues": [
+            {
+              "title": "={{ $json.sheetname }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        840,
+        -496
+      ],
+      "id": "e9302317-a12a-4cc8-82d4-eb79b5168d12",
+      "name": "Create spreadsheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HvIqqw31VGfgY7hV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json.data.map(item => ({ json: item }));\n//const columns = items[0].json.columnname.map(item => ({ json: item }));\n\nreturn { data}\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        -304
+      ],
+      "id": "8be236ea-f964-48ad-b736-f6b386555296",
+      "name": "ParseDatos"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Create spreadsheet').first().json.spreadsheetId }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Create spreadsheet').first().json.sheets[0].properties.sheetId }}",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Apellido",
+              "displayName": "Apellido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rol",
+              "displayName": "Rol",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1632,
+        -400
+      ],
+      "id": "74af4c3f-4dbf-4640-94c7-7abe6af3d433",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HvIqqw31VGfgY7hV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let fullOutput = $input.first().json.output;\n\n// Expresión regular para encontrar el contenido dentro del primer bloque ```json...```\nconst jsonMatch = fullOutput.match(/```json\\s*([\\s\\S]*?)\\s*```/);\n\nif (!jsonMatch || jsonMatch.length < 2) {\n    throw new Error(\"No se pudo encontrar o extraer el bloque JSON esperado.\");\n}\n\n// jsonMatch[1] contendrá el JSON limpio\nconst jsonString = jsonMatch[1].trim();\n\n// 2. Parsear la cadena de texto limpia a un objeto JSON\nconst data = JSON.parse(jsonString);\n\n// 3. Retornar los campos específicos\nreturn {\n    filename: data.filename,\n    sheetname: data.sheetname,\n    data_summary: data.data_summary,\n    data: data.data\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -400
+      ],
+      "id": "bba856e9-af81-4067-8513-1deb7325c9ea",
+      "name": "ParserGoogleSheets"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1184,
+        -400
+      ],
+      "id": "87f16f85-e454-4aff-b320-92d39ca42762",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Acceder y extraer la información de la Hoja/Pestaña (Ítem 0)\nconst sheetData = items[0].json;\n// El array de datos anidados se encuentra en el segundo ítem (índice 1)\n// bajo la estructura: items[1].json.data\nconst nestedDataArray = items[1].json.data;\n\n// Mapea el array anidado para extraer el objeto JSON plano de cada elemento.\n// Cada elemento de 'nestedDataArray' tiene la forma { json: { data_plana } }.\nconst flatItems = nestedDataArray.map(item => ({\n    // El 'json: item.json' toma el objeto plano y lo convierte en el 'json' \n    // del ítem de salida de n8n.\n    json: item.json\n}));\n\n// Devuelve el array final de ítems planos.\n// Ejemplo de salida: [ { json: { Nombre: 'Celeste', Apellido: 'Cid', Rol: '...' } }, ... ]\nreturn flatItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        -400
+      ],
+      "id": "ff566792-fb12-44fb-a99f-9756640d4667",
+      "name": "enrichedItems",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        -400
+      ],
+      "id": "fd961f4d-4501-4770-85d9-4b68b0cccdc6",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2088,
+        -176
+      ],
+      "id": "ed75a2a6-1f9b-456c-8909-d3bf97abd423",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Mhjcbv5QosQy1qtY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2216,
+        -176
+      ],
+      "id": "67cddc5a-4c59-41bb-9e97-31ecf7ac3d71",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=If the file was successfully generated, and you have the file URL available (e.g., as a result of the tool), which will be represented as {{ $('Merge').first().json.spreadsheetUrl }}, output a confirmation message in plain Spanish with the following format:\n\n\n¡Archivo creado y rellenado exitosamente! ✅ El reporte está listo. Puedes acceder al archivo aquí: [LINK]({{ $('Merge').first().json.spreadsheetUrl }})\n\nA continuación, tienes un resumen de la información que contiene:\n\nNombre del Archivo: reporte_actores_Hamlet_2025_11_03.xlsx\n\n\n¡Gracias por usar nuestro sistema!\n\n\nExpected Output (if successful) (Assuming {{ $('Merge').first().json.spreadsheetUrl }} is, for example, https://docs.google.com/spreadsheets/d/1VSYrHcnnCLqe-fzMUOSTVvybkehsq3HlsSJpIj0gH30/edit?gid=898378756#gid=898378756):\n\n¡Archivo creado y rellenado exitosamente! ✅ El reporte está listo. Puedes acceder al archivo aquí: [LINK]({{ $('Merge').first().json.spreadsheetUrl }})\n\nA continuación, tienes un resumen de la información que contiene:\n\nNombre del Archivo: reporte_actores_Hamlet_2025_11_03.xlsx\n\nResumen del Contenido: El reporte contiene las columnas: Nombre, Apellido y Rol de los actores de la obra 'Hamlet'.\n\n¡Gracias por usar nuestro sistema!\n\nExpected Output (if failed):\n\nHubo un error al intentar generar el archivo. Inténtalo nuevamente más tarde.\n\nOutput Format:\n\n    Always respond in plain text (no JSON, no Markdown).\n\n    Do not include explanations or extra messages outside the specified format.\n",
+        "options": {
+          "systemMessage": "You are an intelligent spreadsheet-generating assistant for a theater ticketing system.\n\n\n   "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2080,
+        -400
+      ],
+      "id": "06e7bbb3-7ceb-4961-bd40-73bb89c433f8",
+      "name": "ArchivoExitoso"
+    },
+    {
+      "parameters": {
+        "jsCode": "let fullOutput = $input.first().json.output;\n\n// Expresión regular para encontrar el contenido dentro del primer bloque ```json...```\nconst jsonMatch = fullOutput.match(/```json\\s*([\\s\\S]*?)\\s*```/);\n\nif (!jsonMatch || jsonMatch.length < 2) {\n    throw new Error(\"No se pudo encontrar o extraer el bloque JSON esperado.\");\n}\n\n// jsonMatch[1] contendrá el JSON limpio\nconst jsonString = jsonMatch[1].trim();\n\n// 2. Parsear la cadena de texto limpia a un objeto JSON\nconst data = JSON.parse(jsonString);\n\n// 3. Retornar los campos específicos\nreturn {\n    mail: data.mail,\n    subject: data.subject,\n    message: data.message,\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -792
+      ],
+      "id": "b3ec8b6b-fa47-4440-a181-b67084789023",
+      "name": "ParserMail"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Admin",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query in Postgres": {
+      "ai_tool": [
+        [
+          {
+            "node": "Admin",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "EmailSender",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "EmailSender",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Admin",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Admin": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EmailSender": {
+      "main": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "ParserMail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ParserGoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "EmailSender",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create spreadsheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ParseDatos": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "ParserGoogleSheets": {
+      "main": [
+        [
+          {
+            "node": "Create spreadsheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ParseDatos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "enrichedItems",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enrichedItems": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "ArchivoExitoso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ArchivoExitoso",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "ArchivoExitoso",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ParserMail": {
+      "main": [
+        [
+          {
+            "node": "EmailSender",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "35aa5d0d-1aee-464b-b7c0-3bda3a63d139",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a51f1c6bc152311c8d7bdf34718831b4c8e81a22ad545eb724593d7ae3fef004"
+  },
+  "id": "BV5hOYoT0QAOECsr",
+  "tags": []
+}
