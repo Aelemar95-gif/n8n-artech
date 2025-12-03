@@ -1,4 +1,4 @@
-# 🎭 Proyecto Artech — Orquestador Automatizado (n8n) 🎭
+# 🎭 Proyecto Artech — Orquestador Automatizado (n8n)
 
 **Proyecto Artech** es un workflow avanzado construido en **n8n** que funciona como un **orquestador inteligente** para un sistema de ticketing teatral utilizando un agente SQL basado en IA.
 Permite ejecutar consultas seguras, generar reportes, enviar correos, subir archivos a Google Drive y descargar Excel, todo desde un único webhook.
