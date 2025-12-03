@@ -56,27 +56,32 @@ gestión de consultas SQL, reportes y envíos automáticos de correo.
   * Corrección de errores ortográficos, redundancias y estructura lógica.
   * Homogeneización del formato JSON en todas las herramientas.
   * Inclusión de una cláusula de clarificación para consultas ambiguas.
-    ⚙️ n8n Workflow
+  * 
+⚙️ n8n Workflow
   * Consolidación de nodos LangChain + Google Gemini.
   * Nueva estructura modular: Admin, EmailSender, ParserMail, ParserGoogleSheets, ArchivoExitoso.
   * Implementación del flujo seguro de validación:Detección → 2. Ejecución → 3. Validación → 4. Respuesta.
   * Ajuste de la ruta de ejecución (executionOrder: v1).
   * Validación de contenido JSON con Regex mejorado.
-    📧 EmailSender
+
+📧 EmailSender
   * Prioridad crítica agregada: uso obligatorio de "Send a message in Gmail" antes de cualquier acción.
   * Salida controlada en texto plano (sin JSON/Markdown).
   * Verificación de éxito o error en el envío con mensajes en español profesional.
   * Ejemplo de entrada y salida documentado.
-    📊 FileGenerator y Google Sheets
+    
+📊 FileGenerator y Google Sheets
   * Integración del flujo de creación y completado automático de reportes.
   * Generación de archivos .xlsx con estructura consistente (filename, sheetname, data\_summary, data).
   * Mensaje de confirmación en texto plano al finalizar el proceso.
   * Compatibilidad con DriveUploader para exportar a Google Drive.
-    🔍 Seguridad y robustez
+
+🔍 Seguridad y robustez
   * Limitación estricta a operaciones de lectura SQL (SELECT, COUNT, AVG, SUM).
   * Control de errores y mensajes seguros en lenguaje natural.
   * Prevención de exposición de datos sensibles.
-    💬 Estilo y personalidad del asistente
+
+💬 Estilo y personalidad del asistente
   * Personalidad: profesional, cálida, expresiva y didáctica.
   * Tono natural con uso moderado de emojis.
   * Explicaciones en español claro con contexto cuando aplica.
