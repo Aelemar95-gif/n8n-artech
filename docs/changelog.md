@@ -68,6 +68,5 @@ y las versiones respetan el esquema **SemVer (Semantic Versioning)**.
 ### 🧩 Créditos
 Desarrollado por **Julián (Jota)**  
 para **Artech Argentina – Fundación Pescar**.  
-Documentado y optimizado con asistencia técnica de **GPT-5**.
 
 ---
