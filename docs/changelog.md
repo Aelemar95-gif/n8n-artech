@@ -45,6 +45,7 @@ Refactorización completa del flujo para implementar una arquitectura de Orquest
 ### [1.6.0] – 2025-11-07
 
 [Versión 1.6.0](https://www.google.com/search?q=%23version-160--2025-11-07)
+
 Proyecto Artech v1.6
 integra las últimas mejoras de lógica, prompts y flujo en n8n para la
 gestión de consultas SQL, reportes y envíos automáticos de correo.
