@@ -5,6 +5,78 @@ El formato sigue las convenciones de [Keep a Changelog](https://keepachangelog.c
 y las versiones respetan el esquema **SemVer (Semantic Versioning)**.
 
 ---
+Aquí tenés el **CHANGELOG estilo *Keep a Changelog***, completamente alineado al formato oficial ([https://keepachangelog.com](https://keepachangelog.com)) y basado en:
+
+* el log de la versión **1.8** que me diste
+* la estructura real del proyecto **1.9** proveniente del archivo JSON
+
+---
+
+# 📜 **CHANGELOG – Proyecto Artech**
+
+Formato basado en **Keep a Changelog**
+Este proyecto sigue **Semantic Versioning**.
+
+---
+
+Aquí tenés el **CHANGELOG estilo *Keep a Changelog* con un toque sutil de emojis**, manteniendo el profesionalismo pero haciéndolo más visual y agradable.
+
+---
+
+# 📜 **CHANGELOG – Proyecto Artech**
+
+Formato basado en **Keep a Changelog**
+Este proyecto sigue **Semantic Versioning**.
+
+---
+
+## **[1.9.0] – 2025-12-05 🚀 Versión actual **
+
+### **Added ✨**
+
+* Nuevo **System Prompt unificado** para el Agente Principal, más completo y estricto.
+* Integración formal de la herramienta **ExcelDownloader** con parámetros equivalentes a SheetsGenerator.
+* Nuevos **parsers avanzados** para:
+
+  * extracción de JSON desde bloques `json`
+  * limpieza de contenido mixto texto/JSON
+  * normalización de caracteres invisibles
+* Validaciones mejoradas para todas las herramientas:
+
+  * Mail
+  * Sheets
+  * DriveUploader
+  * ExcelDownloader
+* Sistema ampliado de **palabras clave** para activar herramientas según intención del usuario.
+* Reglas de SQL más estrictas (solo SELECT; prohibidas todas las operaciones de modificación).
+* Mensajes finales estandarizados en español para cada rama funcional.
+* Manejo de errores más robusto mediante prompts especializados en cada rama.
+
+### **Changed 🔧**
+
+* Evolución del flujo hacia una **arquitectura mucho más estable y predecible** basada en orquestación con un único agente inteligente.
+* Reescritura completa del System Prompt, reemplazando reglas dispersas de la v1.8.
+* Mejora en la lógica de selección de herramientas para evitar falsos positivos.
+* Reestructuración del flujo de Excel descargable usando la herramienta formal ExcelDownloader.
+* Normalización del formato JSON requerido para Sheets, Excel y Drive.
+* Actualización del método de confirmación para DriveUploader y EmailSender.
+
+### **Fixed 🛠️**
+
+* Mezcla de texto + JSON en una misma respuesta del agente.
+* Errores de parseo cuando el JSON venía dentro de un bloque `json` o con caracteres extraños.
+* Fallos en el mapeo de arrays complejos en SheetsGenerator.
+* Conflictos entre parsers cuando la intención del usuario era ambigua.
+* Archivos incompletos en DriveUploader debido a contenido mal formateado.
+* Inconsistencias en el valor `download` (“yes/no”), ahora validado.
+
+### **Removed 🧹**
+
+* Prompts redundantes y distribuidos en múltiples nodos.
+* Lógica de selección de herramientas heredada y confusa.
+* Confirmaciones de éxito/error dentro del agente principal (delegadas a agentes dedicados).
+
+---
 
 ### [1.8.0] – 2025-12-03 🚀 Versión actual
 
