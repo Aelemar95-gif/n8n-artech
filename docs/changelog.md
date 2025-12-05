@@ -5,30 +5,6 @@ El formato sigue las convenciones de [Keep a Changelog](https://keepachangelog.c
 y las versiones respetan el esquema **SemVer (Semantic Versioning)**.
 
 ---
-Aquí tenés el **CHANGELOG estilo *Keep a Changelog***, completamente alineado al formato oficial ([https://keepachangelog.com](https://keepachangelog.com)) y basado en:
-
-* el log de la versión **1.8** que me diste
-* la estructura real del proyecto **1.9** proveniente del archivo JSON
-
----
-
-# 📜 **CHANGELOG – Proyecto Artech**
-
-Formato basado en **Keep a Changelog**
-Este proyecto sigue **Semantic Versioning**.
-
----
-
-Aquí tenés el **CHANGELOG estilo *Keep a Changelog* con un toque sutil de emojis**, manteniendo el profesionalismo pero haciéndolo más visual y agradable.
-
----
-
-# 📜 **CHANGELOG – Proyecto Artech**
-
-Formato basado en **Keep a Changelog**
-Este proyecto sigue **Semantic Versioning**.
-
----
 
 ## **[1.9.0] – 2025-12-05 🚀 Versión actual **
 
