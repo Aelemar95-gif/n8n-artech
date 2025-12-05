@@ -6,7 +6,7 @@ y las versiones respetan el esquema **SemVer (Semantic Versioning)**.
 
 ---
 
-## ** [1.9.0] – 2025-12-05 🚀 Versión actual **
+## [1.9.0] – 2025-12-05 *🚀 Versión actual* 
 
 ### **Added ✨**
 
@@ -54,9 +54,7 @@ y las versiones respetan el esquema **SemVer (Semantic Versioning)**.
 
 ---
 
-### [1.8.0] – 2025-12-03 🚀 Versión actual
-
-[Versión 1.8.0](https://www.google.com/search?q=%23version-180--2025-12-03)
+### [1.8.0] – 2025-12-03
 
 Proyecto Artech v1.8
 Refactorización completa del flujo para implementar una arquitectura de Orquestación con el Agente de IA, separando las ramas de funcionalidad (SQL, Sheets, Excel, Drive, Email) y asegurando la respuesta correcta en cada caso (Webhook, Descarga Binaria).
@@ -91,8 +89,6 @@ Refactorización completa del flujo para implementar una arquitectura de Orquest
 -----
 
 ### [1.6.0] – 2025-11-07
-
-[Versión 1.6.0](https://www.google.com/search?q=%23version-160--2025-11-07)
 
 Proyecto Artech v1.6
 integra las últimas mejoras de lógica, prompts y flujo en n8n para la
