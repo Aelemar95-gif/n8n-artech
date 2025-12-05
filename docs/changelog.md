@@ -6,7 +6,7 @@ y las versiones respetan el esquema **SemVer (Semantic Versioning)**.
 
 ---
 
-## **[1.9.0] – 2025-12-05 🚀 Versión actual **
+## ** [1.9.0] – 2025-12-05 🚀 Versión actual **
 
 ### **Added ✨**
 
