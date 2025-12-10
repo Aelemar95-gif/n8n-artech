@@ -5,6 +5,8 @@ Permite ejecutar consultas seguras, generar reportes, enviar correos, subir arch
 
 ---
 
+<img width="1314" height="654" alt="Captura de pantalla 2025-12-10 105539" src="https://github.com/user-attachments/assets/6ebe8efc-a619-4e25-baf8-f4da076f8a62" />
+
 ## 🚀 Funcionalidades Principales
 
 ### 1. 🤖 **Agente de IA (AI Agent)**
